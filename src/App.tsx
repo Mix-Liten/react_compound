@@ -31,6 +31,7 @@ function App() {
         <PostCard post={samplePost}>
           <PostCard.Title />
           <PostCard.Buttons />
+          <p>test</p>
         </PostCard>
       </div>
     </Layout>

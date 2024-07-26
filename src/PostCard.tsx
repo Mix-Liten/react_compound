@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext } from 'react'
+import { Children, isValidElement, createContext, PropsWithChildren, useContext, JSXElementConstructor } from 'react'
 
 type PostCardContext = {
   post: Post
@@ -29,29 +29,43 @@ type PostCardProps = PropsWithChildren & {
 }
 
 export default function PostCard({ children, post }: PostCardProps) {
+  const allowedChildren = Children.toArray(children).filter(child => {
+    return (
+      isValidElement(child) &&
+      ['PostCard-Title', 'PostCard-Content', 'PostCard-User', 'PostCard-Buttons'].includes(
+        (child.type as JSXElementConstructor<unknown> & { displayName: string }).displayName || '',
+      )
+    )
+  })
+
   return (
     <PostCardContext.Provider value={{ post }}>
-      <div className="flex h-full min-h-[150px] w-[300px] flex-col gap-2 bg-blue-400 p-2 rounded">{children}</div>
+      <div className="flex h-full min-h-[150px] w-[300px] flex-col gap-2 bg-blue-400 p-2 rounded">
+        {allowedChildren}
+      </div>
     </PostCardContext.Provider>
   )
 }
 
-PostCard.Title = function PostCardTitle() {
+const Title = () => {
   const { post } = usePostCardContext()
   return <h2 className="text=lg font-semibold">{post.title}</h2>
 }
+Title.displayName = 'PostCard-Title'
 
-PostCard.Content = function PostCardContent() {
+const Content = () => {
   const { post } = usePostCardContext()
   return <p>{post.content}</p>
 }
+Content.displayName = 'PostCard-Content'
 
-PostCard.User = function PostCardUser() {
+const User = () => {
   const { post } = usePostCardContext()
   return <p className="text-sm text-right">By {post.user.name}</p>
 }
+User.displayName = 'PostCard-User'
 
-PostCard.Buttons = function PostCardButtons() {
+const Buttons = () => {
   return (
     <div className="flex flex-row gap-2 justify-end mt-auto">
       <button className="bg-gray-200 p-2 rounded">Read More</button>
@@ -59,3 +73,9 @@ PostCard.Buttons = function PostCardButtons() {
     </div>
   )
 }
+Buttons.displayName = 'PostCard-Buttons'
+
+PostCard.Title = Title
+PostCard.Content = Content
+PostCard.User = User
+PostCard.Buttons = Buttons
