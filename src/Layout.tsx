@@ -23,8 +23,8 @@ export default function Layout({ children }: LayoutProps) {
           {isDarkMode ? 'Light Mode' : 'Dark Mode'}
         </button>
       </header>
-      <main className="flex-grow bg-gray-100 dark:bg-gray-800">{children}</main>
-      <footer className="bg-blue-500 p-4 text-white">Footer</footer>
+      <main className=" flex flex-col flex-grow bg-gray-100 dark:bg-gray-800">{children}</main>
+      <footer className="bg-blue-500 p-4 text-white text-center">Footer</footer>
     </div>
   )
 }
